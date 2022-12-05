@@ -5,16 +5,16 @@ import time
 import itertools
 import numpy as np
 import pandas as pd
-
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 class PerceptronClassifier:
     def __init__(self):
         """
         Constructor for the PerceptronClassifier.
         """
+        self.w = None
         self.ids = (318880754, 206567067)
-        X_train = None
-        y_train = None
 
     def fit(self, X: np.ndarray, y: np.ndarray):
         """
@@ -24,28 +24,37 @@ class PerceptronClassifier:
         :param y: A 1-dimensional numpy array of m rows. it is guaranteed to match X's rows in length (|m_x| == |m_y|).
         Array datatype is guaranteed to be np.uint8.
         """
-        self.X_train = X
-        self.y_train = y
-
+        flag = True
+        K = len(np.unique(y))
+        w = []
+        dim = X.shape[1]
+        for k in range(K):
+            w.append(np.zeros(dim))
+        while (flag):
+            flag = False
+            for i in np.arange(X.shape[0]):
+                y_pred = np.argmax(np.inner(w, X[i]))
+                yt = y[i]
+                if y_pred != yt:
+                    flag = True
+                    for j in range(K):
+                        if j != yt and j != y_pred:
+                            w[yt] = w[yt] + X[i]
+                            w[y_pred] = w[y_pred] - X[i]
+        self.w = w
+        return w
 
     def predict(self, X: np.ndarray) -> np.ndarray:
-        """
-        This method predicts the y labels of a given dataset X, based on a previous training of the model.
-        It is mandatory to call PerceptronClassifier.fit before calling this method.
-        :param X: A 2-dimensional numpy array of m rows and d columns. It is guaranteed that m >= 1 and d >= 1.
-        Array datatype is guaranteed to be np.float32.
-        :return: A 1-dimensional numpy array of m rows. Should be of datatype np.uint8.
-        """
 
-
-        pass
-
+        y_pred = []
+        for x in X:
+            y_pred.append(np.argmax(np.inner(self.w, x)))
+        return np.array(y_pred)
         ### Example code - don't use this:
         # return np.random.randint(low=0, high=2, size=len(X), dtype=np.uint8)
 
 
 if __name__ == "__main__":
-
     print("*" * 20)
     print("Started HW2_318880754_206567067.py")
     # Parsing script arguments
@@ -72,5 +81,4 @@ if __name__ == "__main__":
     print("Done")
     accuracy = np.sum(y_pred == y.ravel()) / y.shape[0]
     print(f"Train accuracy: {accuracy * 100 :.2f}%")
-
     print("*" * 20)
