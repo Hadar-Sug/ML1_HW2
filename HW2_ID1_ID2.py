@@ -25,7 +25,7 @@ class PerceptronClassifier:
         Array datatype is guaranteed to be np.uint8.
         """
         self.X_train = X
-        self.y_train =
+        self.y_train = y
 
 
     def predict(self, X: np.ndarray) -> np.ndarray:
