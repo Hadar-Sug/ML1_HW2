@@ -5,8 +5,7 @@ import time
 import itertools
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
+
 
 class PerceptronClassifier:
     def __init__(self):
@@ -16,6 +15,19 @@ class PerceptronClassifier:
         self.w = None
         self.ids = (318880754, 206567067)
 
+    # def fit(self, X: np.ndarray, y: np.ndarray):
+    #     classes = np.unique(y)
+    #     self.k = np.size(classes)
+    #     self.ws = [np.zeros(X.shape[1], ) for _ in range(self.k)]
+    #     done = False
+    #     while not done:
+    #         done = True
+    #         for t, xi in enumerate(X):
+    #             yhat = np.argmax([np.inner(wi, xi) for wi in self.ws])
+    #             if yhat != y[t]:
+    #                 self.ws[yhat] -= xi
+    #                 self.ws[y[t]] += xi
+    #                 done = False
     def fit(self, X: np.ndarray, y: np.ndarray):
         """
         This method trains a multiclass perceptron classifier on a given training set X with label set y.
@@ -23,14 +35,14 @@ class PerceptronClassifier:
         Array datatype is guaranteed to be np.float32.
         :param y: A 1-dimensional numpy array of m rows. it is guaranteed to match X's rows in length (|m_x| == |m_y|).
         Array datatype is guaranteed to be np.uint8.
+        :return: True if the perceptron found a linear separating hyperplane, False otherwise.
         """
+        is_separable = False
         flag = True
         K = len(np.unique(y))
-        w = []
         dim = X.shape[1]
-        for k in range(K):
-            w.append(np.zeros(dim))
-        while (flag):
+        w = [np.zeros(dim) for _ in range(K)]
+        while flag:
             flag = False
             for i in np.arange(X.shape[0]):
                 y_pred = np.argmax(np.inner(w, X[i]))
@@ -42,14 +54,14 @@ class PerceptronClassifier:
                             w[yt] = w[yt] + X[i]
                             w[y_pred] = w[y_pred] - X[i]
         self.w = w
-        return w
+        return not is_separable
 
     def predict(self, X: np.ndarray) -> np.ndarray:
 
         y_pred = []
         for x in X:
             y_pred.append(np.argmax(np.inner(self.w, x)))
-        return np.array(y_pred)
+        return np.array(y_pred, dtype=np.uint8)
         ### Example code - don't use this:
         # return np.random.randint(low=0, high=2, size=len(X), dtype=np.uint8)
 
@@ -79,6 +91,7 @@ if __name__ == "__main__":
     print("Done")
     y_pred = model.predict(X)
     print("Done")
+    print(np.sum(y_pred == y.ravel()))
     accuracy = np.sum(y_pred == y.ravel()) / y.shape[0]
     print(f"Train accuracy: {accuracy * 100 :.2f}%")
     print("*" * 20)
