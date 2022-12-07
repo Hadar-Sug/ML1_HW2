@@ -15,19 +15,7 @@ class PerceptronClassifier:
         self.w = None
         self.ids = (318880754, 206567067)
 
-    # def fit(self, X: np.ndarray, y: np.ndarray):
-    #     classes = np.unique(y)
-    #     self.k = np.size(classes)
-    #     self.ws = [np.zeros(X.shape[1], ) for _ in range(self.k)]
-    #     done = False
-    #     while not done:
-    #         done = True
-    #         for t, xi in enumerate(X):
-    #             yhat = np.argmax([np.inner(wi, xi) for wi in self.ws])
-    #             if yhat != y[t]:
-    #                 self.ws[yhat] -= xi
-    #                 self.ws[y[t]] += xi
-    #                 done = False
+
     def fit(self, X: np.ndarray, y: np.ndarray):
         """
         This method trains a multiclass perceptron classifier on a given training set X with label set y.
@@ -54,7 +42,7 @@ class PerceptronClassifier:
                             w[yt] = w[yt] + X[i]
                             w[y_pred] = w[y_pred] - X[i]
         self.w = w
-        return not is_separable
+
 
     def predict(self, X: np.ndarray) -> np.ndarray:
 
@@ -62,8 +50,6 @@ class PerceptronClassifier:
         for x in X:
             y_pred.append(np.argmax(np.inner(self.w, x)))
         return np.array(y_pred, dtype=np.uint8)
-        ### Example code - don't use this:
-        # return np.random.randint(low=0, high=2, size=len(X), dtype=np.uint8)
 
 
 if __name__ == "__main__":
@@ -91,7 +77,6 @@ if __name__ == "__main__":
     print("Done")
     y_pred = model.predict(X)
     print("Done")
-    print(np.sum(y_pred == y.ravel()))
     accuracy = np.sum(y_pred == y.ravel()) / y.shape[0]
     print(f"Train accuracy: {accuracy * 100 :.2f}%")
     print("*" * 20)
