@@ -15,7 +15,6 @@ class PerceptronClassifier:
         self.w = None
         self.ids = (318880754, 206567067)
 
-
     def fit(self, X: np.ndarray, y: np.ndarray):
         """
         This method trains a multiclass perceptron classifier on a given training set X with label set y.
@@ -25,7 +24,6 @@ class PerceptronClassifier:
         Array datatype is guaranteed to be np.uint8.
         :return: True if the perceptron found a linear separating hyperplane, False otherwise.
         """
-        is_separable = False
         flag = True
         K = len(np.unique(y))
         dim = X.shape[1]
@@ -42,7 +40,6 @@ class PerceptronClassifier:
                             w[yt] = w[yt] + X[i]
                             w[y_pred] = w[y_pred] - X[i]
         self.w = w
-
 
     def predict(self, X: np.ndarray) -> np.ndarray:
 
